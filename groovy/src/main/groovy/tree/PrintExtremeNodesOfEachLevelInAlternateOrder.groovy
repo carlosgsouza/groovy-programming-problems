@@ -23,7 +23,7 @@ class PrintExtremeNodesOfEachLevelInAlternateOrder extends Specification {
 		(http://www.careercup.com/question?id=19574703)
  */
 
-	def "should build a BST and search for a node on it"() {
+	def "should solve the problem"() {
 		given:
 		def tree = n(10, n(5, n(9, n(14), null), n(20)), n(11, null, n(15, null, n(25, null, n(30)))))
 		
