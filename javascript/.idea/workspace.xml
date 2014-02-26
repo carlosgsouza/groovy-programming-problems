@@ -23,19 +23,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SpecRunner.html" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="SpecRunner.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/SpecRunner.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="64" selection-start="657" selection-end="657" vertical-scroll-proportion="0.0" vertical-offset="210" max-vertical-offset="405">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IsPalindrome.js" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/string/IsPalindrome.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="41" selection-start="1026" selection-end="1026" vertical-scroll-proportion="0.46826223" vertical-offset="0" max-vertical-offset="961">
+            <state line="14" column="64" selection-start="657" selection-end="657" vertical-scroll-proportion="0.22411953" vertical-offset="0" max-vertical-offset="937">
               <folding />
             </state>
           </provider>
@@ -102,24 +93,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="javascript" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="javascript" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="javascript" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="string" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -248,23 +221,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/string/IsPalindrome.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="0" selection-start="156" selection-end="156" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="225">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SpecRunner.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="64" selection-start="657" selection-end="657" vertical-scroll-proportion="0.0" vertical-offset="210" max-vertical-offset="405">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/string/IsPalindrome.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="41" selection-start="1026" selection-end="1026" vertical-scroll-proportion="0.46826223" vertical-offset="0" max-vertical-offset="961">
+        <state line="14" column="64" selection-start="657" selection-end="657" vertical-scroll-proportion="0.22411953" vertical-offset="0" max-vertical-offset="937">
           <folding />
         </state>
       </provider>
