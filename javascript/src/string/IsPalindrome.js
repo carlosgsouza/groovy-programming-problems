@@ -7,7 +7,7 @@ var isPalindrome = function(string) {
     return true;
 }
 
-describe("String/IsPalindrome", function() {
+describe("string/IsPalindrome", function() {
     it("One letter words are palindromes", function() {
         expect(isPalindrome('a')).toBe(true);
         expect(isPalindrome('b')).toBe(true);
