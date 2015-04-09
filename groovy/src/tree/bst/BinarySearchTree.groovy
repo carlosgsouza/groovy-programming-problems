@@ -1,10 +1,12 @@
 package tree.bst
 
 import spock.lang.Specification
+import spock.lang.Unroll;
 
-class IterativeBinarySearchTree extends Specification {
+class BinarySearchTree extends Specification {
 
-	def "should build a BST and search for a node on it"() {
+	@Unroll
+	def "given a BST with the values #values, exists(#number) should return #exists"() {
 		expect:
 		new IterativeBinarySearchTree(values).exists(number) == exists
 		
@@ -16,8 +18,23 @@ class IterativeBinarySearchTree extends Specification {
 		true	| 7			| [5, 2, 7, 1, 9, 3, 8, 6, 4]
 		true	| 50		| -100..100	// Unless we have a balanced BST, this will create an equivalent to a sorted linked list
 	}
-
-	public static class BinarySearchTree {
+	
+	@Unroll
+	def "given a BST with values #values, should export it"() {
+		expect:
+		new IterativeBinarySearchTree(values).export() == export
+		
+		where:
+		values					| export
+		[]						| null
+		[1]						| [value:1]
+		[null]					| [value:null]
+		[2, 1, 3]				| [value:2, left:[value:1], right:[value:3]]
+		[4, 2, 8, 1, 3, 6, 10]	| [value:4, left:[value:2, left:[value:1], right:[value:3]], right:[value:8, left:[value:6], right:[value:10]]]
+		[1, 2, 3, 4]			| [value:1, right:[value:2, right:[value:3, right:[value:4]]]]
+	}
+	
+	public static class IterativeBinarySearchTree {
 		
 		static class Node {
 			def value
@@ -27,52 +44,66 @@ class IterativeBinarySearchTree extends Specification {
 		
 		Node root
 		
-		public BinarySearchTree(values) {
+		public IterativeBinarySearchTree(values) {
 			values.each {
 				insert(it)	
 			}
 		}
 		
+		public Map export() {
+			exportNode(root)
+		}
+		
+		private exportNode(Node node) {
+			if(node == null) {
+				return null
+			} 
+			
+			def result = [value : node.value]
+			if(node.left) {
+				result.left = exportNode(node.left)
+			} 
+			if(node.right) {
+				result.right = exportNode(node.right)
+			}
+			return result
+		}
+		
 		public exists(value) {
-			if(!root) {
-				return false
-			} else {
-				Node node = root
-				
-				while(node) {
-					if(node.value == value) {
-						return true
-					}
-					else if(value < node.value) {
+			Node node = root
+			while(node) {
+				if(node.value == value) {
+					return true
+				} else {
+					if(value < node.value) {
 						node = node.left
 					} else {
 						node = node.right
 					}
 				}
-				
-				return false
 			}
+			
+			return false
 		}
 		
 		public insert(value) {
-			if(!root) {
+			if(root == null) {
 				root = new Node(value:value)
 			} else {
 				Node node = root
-			
 				while(true) {
 					if(value < node.value) {
-						if(!node.left) {
+						if(node.left == null) {
 							node.left = new Node(value:value)
 							break
-						}  else {
+						} else {
 							node = node.left
 						}
 					} else {
-						if(!node.right) {
+						if(node.right == null) {
 							node.right = new Node(value:value)
 							break
-						}  else {
+						} else {
 							node = node.right
 						}
 					}
