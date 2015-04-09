@@ -1,12 +1,12 @@
-package tree
+package tree.bst
 
 import spock.lang.Specification
 
-class BST extends Specification {
+class IterativeBinarySearchTree extends Specification {
 
 	def "should build a BST and search for a node on it"() {
 		expect:
-		new BinarySearchTree(values).exists(number) == exists
+		new IterativeBinarySearchTree(values).exists(number) == exists
 		
 		where:
 		exists	| number	| values

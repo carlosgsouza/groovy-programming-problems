@@ -1,4 +1,4 @@
-package tree
+package tree.bst
 
 import spock.lang.Specification
 
