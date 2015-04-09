@@ -47,6 +47,9 @@ class BinarySearchTree extends Specification {
 		[4, 2, 8, 1, 3, 6, 10]	| 10			| [value:4, left:[value:2, left:[value:1], right:[value:3]], right:[value:8, left:[value:6]]]
 		[4, 2, 8, 1, 3, 6, 10]	| 8				| [value:4, left:[value:2, left:[value:1], right:[value:3]], right:[value:10, left:[value:6]]]
 		[4, 2, 8, 1, 3, 6, 10]	| 4				| [value:8, left:[value:2, left:[value:1], right:[value:3]], right:[value:10, left:[value:6]]]
+		[2, 4, 3, 5]			| 2				| [value:4, left:[value:3], right:[value:5]]
+		[1, 2, 4, 3, 5]			| 2				| [value:1, right:[value:4, left:[value:3], right:[value:5]]]
+		[10, 2, 4, 3, 5]		| 2				| [value:10, left:[value:4, left:[value:3], right:[value:5]]]
 	}
 	
 	@Unroll
@@ -188,6 +191,7 @@ class BinarySearchTree extends Specification {
 			
 			if(root.value == value) {
 				root = removeNode(root)
+				return
 			}
 			
 			Node parent = root
@@ -216,13 +220,46 @@ class BinarySearchTree extends Specification {
 			String lastDirection = null
 			
 			while(node) {
+				if(node.right && node.left == null) {
+					// node has only the right child, so replace node with it
+					if(parent == null) {
+						// this is the root node, no need to update parent
+						return node.right
+					} else if(lastDirection== 'r') {
+						// node is the right child
+						parent.right = node.right
+						return result
+					} else if(lastDirection== 'l') {
+						// node is the left child
+						parent.left = node.right
+						return result
+					}
+				}
+				if(node.left && node.right == null) {
+					// node has only the left child, so replace node with it
+					
+					if(parent == null) {
+						// this is the root node, no need to update parent
+						return node.left
+					} else if(lastDirection== 'l') {
+						// node is the left child
+						parent.left = node.left
+						return result
+					} else if(lastDirection== 'r') {
+						// node is the right child
+						parent.right = node.left
+						return result
+					}
+				}
 				if(node.right) {
+					// promote the right child
 					node.value = node.right.value
 					
 					parent = node
 					node = node.right
 					lastDirection = 'r'
 				} else if(node.left) {
+					// promote the left child
 					node.value = node.left.value
 					
 					parent = node
@@ -232,7 +269,7 @@ class BinarySearchTree extends Specification {
 					// We hit a leaf
 					
 					if(parent == null) {
-						// In case the deleted node is a , we return null instead of a Node with value=null
+						// In case the deleted node is the root, we return null instead of a Node with value=null
 						return null
 					}
 				
