@@ -6,6 +6,40 @@ import spock.lang.Unroll;
 class BinarySearchTree extends Specification {
 
 	@Unroll
+	def "the minimum common ancestor of #a and #b is #result"() {
+		given:
+		def tree = new BinarySearchTreeImpl([4, 2, 8, 1, 3, 6, 10])
+		
+		expect:
+		tree.export() == [
+			value:4, 
+			left:[
+				value:2, 
+				left:[value:1], 
+				right:[value:3]
+			], 
+			right:[
+				value:8, 
+				left:[value:6], 
+				right:[value:10]
+			]
+		]
+		
+		and:
+		tree.getLowestCommonAncestor(a, b) == result
+		
+		where:
+		a	| b		| result
+		2	| 8		| 4
+		8	| 2		| 4
+		2	| 4		| 4
+		2	| 2		| 2
+		4	| 4		| 4
+		2	| 6		| 4
+		6	| 10	| 8
+	}
+	
+	@Unroll
 	def "should crate the tree #exported from values #values"() {
 		expect:
 		new BinarySearchTreeImpl(values).export() == exported
@@ -182,7 +216,25 @@ class BinarySearchTree extends Specification {
 			return result
 		}
 		
-		
+		// Walk the tree until min(a,b) < node.value < max(a,b)
+		public getLowestCommonAncestor(a, b) {
+			def min = Math.min(a, b)
+			def max = Math.max(a, b)
+			
+			Node node = root
+						
+			while(node != null) {
+				if(node.value < min) {
+					// Both values are under the right side of the node
+					node = node.right
+				} else if(node.value > max){
+					// Both values are under the right side of the node
+					node = node.left
+				} else {
+					return node.value
+				}
+			}
+		}
 		
 		public remove(value) {
 			if(root == null) {
@@ -273,6 +325,7 @@ class BinarySearchTree extends Specification {
 						return null
 					}
 				
+					// the leaf has been promoted on a previous step
 					if(lastDirection == 'l') {
 						parent.left = null
 						return result
