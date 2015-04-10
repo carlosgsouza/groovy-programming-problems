@@ -5,6 +5,58 @@ import spock.lang.Unroll;
 
 class BinarySearchTree extends Specification {
 
+	def "should transform a BST in a sorted double linked list withou consuming additional space"() {
+		// http://www.careercup.com/question?id=14232732
+		given:
+		def tree = new BinarySearchTreeImpl([4, 2, 5, 1, 3, 6, 7])
+		
+		expect:
+		tree.export() == [
+			value:4,
+			left:[
+				value:2,
+				left:[value:1],
+				right:[value:3]
+			],
+			right:[
+				value:5,
+				right:[
+					value:6,
+					right:[value:7]
+				],
+				
+			]
+		]
+		
+		when:
+		def result = tree.toSortedDoubleLinkedList()
+		
+		then: "head element does not have and index to the left"
+		result.left == null
+		
+		and: "list is double linked" 
+		def values = []
+		def node = result
+		
+		while(node != null) {
+			if(node.left) {
+				assert node.left.value < node.value
+			}
+			if(node.right) {
+				assert node.right.value >= node.value
+			}
+			
+			values << node.value
+			node = node.right
+		}
+		
+		and: "list are sorted"
+		values == [1, 2, 3, 4, 5, 6, 7]
+		
+		and: "tail element does not have a link to the right"
+		node == null
+	}
+	
 	@Unroll
 	def "the minimum common ancestor of #a and #b is #result"() {
 		given:
@@ -133,24 +185,24 @@ class BinarySearchTree extends Specification {
 	
 	public static class BinarySearchTreeImpl {
 		
-		static class Node {
+		public static class TreeNode {
 			def value
-			Node left
-			Node right
+			TreeNode left
+			TreeNode right
 			
 			public String toString() {
 				return "[value:$value, left:${left?.value}, right:${right?.value}]"
 			}
 		}
 		
-		Node root
+		TreeNode root
 		
 		public exists(value) {
 			find(value) != null
 		}
 		
-		public Node find(value) {
-			Node node = root
+		public TreeNode find(value) {
+			TreeNode node = root
 			while(node) {
 				if(node.value == value) {
 					return node
@@ -168,20 +220,20 @@ class BinarySearchTree extends Specification {
 		
 		public insert(value) {
 			if(root == null) {
-				root = new Node(value:value)
+				root = new TreeNode(value:value)
 			} else {
-				Node node = root
+				TreeNode node = root
 				while(true) {
 					if(value < node.value) {
 						if(node.left == null) {
-							node.left = new Node(value:value)
+							node.left = new TreeNode(value:value)
 							break
 						} else {
 							node = node.left
 						}
 					} else {
 						if(node.right == null) {
-							node.right = new Node(value:value)
+							node.right = new TreeNode(value:value)
 							break
 						} else {
 							node = node.right
@@ -197,11 +249,42 @@ class BinarySearchTree extends Specification {
 			}
 		}
 		
+		public TreeNode toSortedDoubleLinkedList() {
+			return nodeToSortedDoubleLinkedList(root).min
+		}
+		
+		class MinMaxNode {
+			TreeNode min, max
+		}
+		private MinMaxNode nodeToSortedDoubleLinkedList(TreeNode node) {
+			MinMaxNode result = new MinMaxNode()
+			
+			if(node.left == null) {
+				result.min = node
+			} else {
+				MinMaxNode resultLeft = nodeToSortedDoubleLinkedList(node.left)
+				resultLeft.max.right = node
+				result.min = resultLeft.min
+				node.left = resultLeft.max
+			}
+			
+			if(node.right == null) {
+				result.max = node
+			} else {
+				MinMaxNode resultRight = nodeToSortedDoubleLinkedList(node.right)
+				resultRight.max.left = node
+				result.max = resultRight.max
+				node.right = resultRight.min
+			}
+			
+			return result
+		}
+		
 		public Map export() {
 			exportNode(root)
 		}
 		
-		private exportNode(Node node) {
+		private exportNode(TreeNode node) {
 			if(node == null) {
 				return null
 			}
@@ -221,7 +304,7 @@ class BinarySearchTree extends Specification {
 			def min = Math.min(a, b)
 			def max = Math.max(a, b)
 			
-			Node node = root
+			TreeNode node = root
 						
 			while(node != null) {
 				if(node.value < min) {
@@ -246,7 +329,7 @@ class BinarySearchTree extends Specification {
 				return
 			}
 			
-			Node parent = root
+			TreeNode parent = root
 			while(parent) {
 				if(parent.left?.value == value) {
 					parent.left = removeNode(parent.left)
@@ -262,13 +345,13 @@ class BinarySearchTree extends Specification {
 			}
 		}
 		
-		private Node removeNode(Node node) {
+		private TreeNode removeNode(TreeNode node) {
 			if(node == null) {
 				return null
 			}
 			
-			Node result = node
-			Node parent = null
+			TreeNode result = node
+			TreeNode parent = null
 			String lastDirection = null
 			
 			while(node) {
