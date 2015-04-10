@@ -5,6 +5,86 @@ import spock.lang.Unroll;
 
 class BinarySearchTree extends Specification {
 
+	def "should traverse the tree on pre-order, in-order and post-order"() {
+		given:
+		def tree = new BinarySearchTreeImpl([4, 2, 1, 3, 6, 5, 7])
+		
+		expect:
+		tree.export() == [
+			value:4,
+			left:[
+				value:2,
+				left:[value:1],
+				right:[value:3]
+			],
+			right:[
+				value:6,
+				left:[value:5],
+				right:[value:7]
+			]
+		]
+		
+		and:
+		tree.preOrderIterative() == [4, 2, 1, 3, 6, 5, 7]
+		tree.preOrderRecursive() == [4, 2, 1, 3, 6, 5, 7]
+		
+		and:
+		
+		tree.inOrderRecursive() == [1, 2, 3, 4, 5, 6, 7]
+		tree.inOrderIterative() == [1, 2, 3, 4, 5, 6, 7]
+		
+		and:
+		tree.postOrderIterative() == [1, 3, 2, 5, 7, 6, 4]
+		tree.postOrderRecursive() == [1, 3, 2, 5, 7, 6, 4]
+	}
+	
+	def "Given a BST, replace the node value with the sum of all the node values that are greater than the current node value"() {
+		// http://www.careercup.com/question?id=13394676
+		given:
+		def tree = new BinarySearchTreeImpl([4, 2, 8, 1, 3, 7, 10, 9])
+		
+		expect:
+		tree.export() == [
+			value:4,
+			left:[
+				value:2,
+				left:[value:1],
+				right:[value:3]
+			],
+			right:[
+				value:8,
+				left:[value:7],
+				right:[
+					value:10,
+					left:[value:9]
+				],
+				
+			]
+		]
+		
+		when:
+		tree.replaceNodeValuesWithSumOfNodesWithGreaterValues()
+		
+		then: 
+		tree.export() == [
+			value:34,
+			left:[
+				value:3,
+				left:[value:1],
+				right:[value:3]
+			],
+			right:[
+				value:19,
+				left:[value:7],
+				right:[
+					value:10,
+					left:[value:9]
+				],
+				
+			]
+		]
+	}
+	
 	def "should transform a BST in a sorted double linked list withou consuming additional space"() {
 		// http://www.careercup.com/question?id=14232732
 		given:
@@ -253,6 +333,30 @@ class BinarySearchTree extends Specification {
 			return nodeToSortedDoubleLinkedList(root).min
 		}
 		
+		public replaceNodeValuesWithSumOfNodesWithGreaterValues() {
+			replaceNodeValuesWithSumOfNodesWithGreaterValuesForNode(root)
+		}
+		
+		private int replaceNodeValuesWithSumOfNodesWithGreaterValuesForNode(TreeNode node) {
+			int leftSum = 0
+			int rightSum = 0
+						
+			if(node.left != null) {
+				leftSum = replaceNodeValuesWithSumOfNodesWithGreaterValuesForNode(node.left)
+			}
+			if(node.right != null) {
+				rightSum = replaceNodeValuesWithSumOfNodesWithGreaterValuesForNode(node.right)
+			}
+			
+			int result = leftSum + node.value + rightSum
+			
+			if(node.right != null) {
+				node.value = rightSum
+			}
+			
+			return result
+		}
+		
 		class MinMaxNode {
 			TreeNode min, max
 		}
@@ -419,6 +523,151 @@ class BinarySearchTree extends Specification {
 				}
 			}
 		}
+		
+		public List postOrderRecursive() {
+			def result = []
+			postOrderRecursiveForNode(root, result)
+			return result
+		}
+		
+		private postOrderRecursiveForNode(TreeNode node, List result) {
+			if(node.left) {
+				postOrderRecursiveForNode(node.left, result)
+			}
+			if(node.right) {
+				postOrderRecursiveForNode(node.right, result)
+			}
+			
+			result.add(node.value)
+		}
+		
+		public List inOrderRecursive() {
+			def result = []
+			inOrderRecursiveForNode(root, result)
+			return result
+		}
+		
+		private inOrderRecursiveForNode(TreeNode node, List result) {
+			if(node.left) {
+				inOrderRecursiveForNode(node.left, result)
+			}
+			
+			result.add(node.value)
+			
+			if(node.right) {
+				inOrderRecursiveForNode(node.right, result)
+			}
+		}
+		
+		public List preOrderRecursive() {
+			def result = []
+			preOrderRecursiveForNode(root, result)
+			return result
+		}
+		
+		private preOrderRecursiveForNode(TreeNode node, List result) {
+			result.add(node.value)
+			
+			if(node.left) {
+				preOrderRecursiveForNode(node.left, result)
+			}
+			
+			if(node.right) {
+				preOrderRecursiveForNode(node.right, result)
+			}
+		}
+		
+		public List preOrderIterative() {
+			def result = []
+			
+			List Q = new LinkedList()
+			Q.add(root)
+			
+			while(!Q.isEmpty()) {
+				TreeNode node = Q.pop()
+				result << node.value
+				
+				if(node.right != null) {
+					Q.add(node.right)
+				}
+				if(node.left != null) {
+					Q.add(node.left)
+				}
+			}
+			
+			return result
+		}
+		
+		public List postOrderIterative() {
+			def result = []
+			
+			List Qnode = new LinkedList()
+			List Qvisited = new LinkedList()
+			
+			Qnode.add(root)
+			Qvisited.add(false)
+			
+			while(!Qnode.isEmpty()) {
+				boolean visited = Qvisited.last()
+				if(visited == true) {
+					result << Qnode.pop().value
+					Qvisited.pop()
+					
+					continue
+				}
+				
+				Qvisited[-1] = true
+				TreeNode node = Qnode.last()
+				
+				if(node.right != null) {
+					Qnode.add(node.right)
+					Qvisited.add(false)
+				}
+				if(node.left != null) {
+					Qnode.add(node.left)
+					Qvisited.add(false)
+				}
+			}
+			
+			return result
+		}
+		
+		public List inOrderIterative() {
+			def result = []
+			
+			List Qnode = new LinkedList()
+			List Qprocess = new LinkedList()
+			
+			Qnode.add(root)
+			Qprocess.add(false)
+			
+			while(!Qnode.isEmpty()) {
+				boolean process = Qprocess.pop()
+				if(process == true) {
+					result << Qnode.pop().value
+					continue
+				}
+				
+				TreeNode node = Qnode.pop()
+				
+				if(node.right != null) {
+					Qnode.add(node.right)
+					Qprocess.add(false)
+				}
+				
+				Qnode.add(node)
+				Qprocess.add(true)
+				
+				if(node.left != null) {
+					Qnode.add(node.left)
+					Qprocess.add(false)
+				}
+			}
+			
+			return result
+		}
 	
 	}
+	
+	
 }
