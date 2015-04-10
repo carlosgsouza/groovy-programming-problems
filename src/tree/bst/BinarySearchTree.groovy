@@ -5,6 +5,15 @@ import spock.lang.Unroll;
 
 class BinarySearchTree extends Specification {
 
+	def "should find common elements in two trees"() {
+		given:
+		def tree1 = new BinarySearchTreeImpl([4, 2, 1, 3, 6, 5, 7])
+		def tree2 = new BinarySearchTreeImpl([6, 4, 9, 1, 7, 11, 0, 8])
+		
+		expect:
+		tree1.findCommonElements(tree2) == [1, 4, 6, 7]
+	}
+	
 	def "should traverse the tree on pre-order, in-order and post-order"() {
 		given:
 		def tree = new BinarySearchTreeImpl([4, 2, 1, 3, 6, 5, 7])
@@ -665,6 +674,61 @@ class BinarySearchTree extends Specification {
 			}
 			
 			return result
+		}
+		
+		public List findCommonElements(BinarySearchTreeImpl tree2) {
+			def result = []
+			
+			List Qnode_1 = new LinkedList()
+			List Qprocess_1 = new LinkedList()
+			Qnode_1.add(root)
+			Qprocess_1.add(false)
+			
+			List Qnode_2 = new LinkedList()
+			List Qprocess_2 = new LinkedList()
+			Qnode_2.add(tree2.root)
+			Qprocess_2.add(false)
+			
+			def value1 = nextValueInOrder(Qnode_1, Qprocess_1)
+			def value2 = nextValueInOrder(Qnode_2, Qprocess_2)
+			
+			while(value1 != null && value2 != null) {
+				if(value1 == value2) {
+					result << value1
+					value1 = nextValueInOrder(Qnode_1, Qprocess_1)
+				} else if(value1 > value2) {
+					value2 = nextValueInOrder(Qnode_2, Qprocess_2)
+				} else if(value1 < value2) {
+					value1 = nextValueInOrder(Qnode_1, Qprocess_1)
+				}
+			}
+			
+			return result
+			
+		}
+		
+		private nextValueInOrder(List Qnode, List Qprocess) {
+			while(!Qnode.isEmpty()) {
+				boolean process = Qprocess.pop()
+				if(process == true) {
+					return Qnode.pop().value
+				}
+				
+				TreeNode node = Qnode.pop()
+				
+				if(node.right != null) {
+					Qnode.add(node.right)
+					Qprocess.add(false)
+				}
+				
+				Qnode.add(node)
+				Qprocess.add(true)
+				
+				if(node.left != null) {
+					Qnode.add(node.left)
+					Qprocess.add(false)
+				}
+			}
 		}
 	
 	}
