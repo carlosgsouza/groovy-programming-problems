@@ -4,7 +4,7 @@ import spock.lang.Specification
 
 class DinningPhilosophers extends Specification {
 	
-	int seats = 2
+	int seats = 5
 	def forks = 0..<seats
 	boolean dinnerIsOver = false
 	
@@ -21,7 +21,7 @@ class DinningPhilosophers extends Specification {
 		}
 		
 		and: "wait a little bit and tell them dinner is over"
-		sleep(1000)
+		sleep(10000)
 		dinnerIsOver = true
 
 		def totalEaten = 0
@@ -52,10 +52,10 @@ class DinningPhilosophers extends Specification {
 		int number
 		int bites
 				
-		Philosopher(number, leftFork, rightFork) {
+		Philosopher(int number, int forkA, int forkB) {
 			this.number = number
-			this.leftFork = leftFork
-			this.rightFork = rightFork
+			this.leftFork = Math.min(forkA, forkB)
+			this.rightFork = Math.max(forkA, forkB)
 		}
 		
 		void run() {
