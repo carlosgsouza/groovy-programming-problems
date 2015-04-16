@@ -4,7 +4,7 @@ import spock.lang.Specification
 
 class DinningPhilosophers extends Specification {
 	
-	int seats = 5
+	int seats = 4
 	def forks = 0..<seats
 	boolean dinnerIsOver = false
 	
@@ -21,7 +21,7 @@ class DinningPhilosophers extends Specification {
 		}
 		
 		and: "wait a little bit and tell them dinner is over"
-		sleep(10000)
+		sleep(3000)
 		dinnerIsOver = true
 
 		def totalEaten = 0
@@ -34,8 +34,8 @@ class DinningPhilosophers extends Specification {
 		totalEaten > 0
 		
 		and: "none of them ate too much or too little"
-		int minimumEaten = (totalEaten / seats) * 0.75
-		int maximumEaten = (totalEaten / seats) * 1.25
+		int minimumEaten = (totalEaten / seats) * 0.5
+		int maximumEaten = (totalEaten / seats) * 2
 		
 		philosophers*.bites.every{ it > minimumEaten }
 		philosophers*.bites.every{ it < maximumEaten }
@@ -54,8 +54,8 @@ class DinningPhilosophers extends Specification {
 				
 		Philosopher(int number, int forkA, int forkB) {
 			this.number = number
-			this.leftFork = Math.min(forkA, forkB)
-			this.rightFork = Math.max(forkA, forkB)
+			this.leftFork = (number%2==0) ? forkA : forkB
+			this.rightFork = (number%2==1) ? forkA : forkB
 		}
 		
 		void run() {
