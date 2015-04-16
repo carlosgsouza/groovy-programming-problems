@@ -6,7 +6,7 @@ class ProducerConsumer extends Specification {
 	
 	def "should produce and consume in parallel withtout exploding or busywaiting"() {
 		given:
-		int itemsProduced = 1000
+		int itemsProduced = 10000
 		int bufferSize = 10
 		
 		and:
