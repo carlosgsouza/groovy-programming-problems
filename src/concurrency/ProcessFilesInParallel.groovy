@@ -4,41 +4,55 @@ import spock.lang.Specification
 
 class ProcessFilesInParallel extends Specification {
 	
-	def "should process a big file in parallel"() {
-		given:
-		Integer lines = 3000
-				
-		and:
-		File file = new File("the_file.txt")
+	static Integer lines = 30000
+	static File file
+	
+	def setupSpec() {
+		file = new File("ProcessFilesInParallel.txt")
 		if(file.exists()) {
 			file.delete()
 		}
+		
+		def writer = new BufferedWriter(new FileWriter(file.absoluteFile))
 		lines.times {
-			file << it + "\n"
+			writer.write(it.toString())
+			writer.write("\n")
 		}
+		writer.close()
+	}
+	
+	def cleanupSpec() {
+		file?.delete()
+	}
+	
+	def "should process a big file in parallel"() {
+		given:
+		Integer threads = 3
+		int batchSize = lines / threads 
 		
 		and: "three readers, each reading a third of the file"
-		Reader r1 = new Reader(file:file, startLine:0, 	  count:1000)
-		Reader r2 = new Reader(file:file, startLine:1000, count:1000)
-		Reader r3 = new Reader(file:file, startLine:2000, count:1000)
+		List<Reader> readers = []
+		threads.times { i ->
+			readers << new Reader(file:file, startLine:i*batchSize, count:batchSize)
+		} 
 		
 		when: "the threads are started"
-		r1.start()
-		r2.start()
-		r3.start()
+		readers.each {
+			it.start()
+		}
 		
 		and: "we wait for completion"
-		r1.join()
-		r2.join()
-		r3.join()
+		readers.each {
+			it.join()
+		}
 		
 		then:
-		r1.lines ==    0.. 999
-		r2.lines == 1000..1999
-		r3.lines == 2000..2999
+		readers.every {
+			it.lines == it.startLine..<(it.startLine + it.count)
+		}
 		
-		cleanup:
-		file?.delete()
+		and:
+		readers.inject(0) { count, reader -> count + reader.lines.size() } == lines
 	}
 	
 	class Reader extends Thread {
@@ -73,6 +87,10 @@ class ProcessFilesInParallel extends Specification {
 				}
 			}
 			
+		}
+		
+		public String toString() {
+			return "Reader(${startLine}...${startLine+count})"
 		}
 		
 		
