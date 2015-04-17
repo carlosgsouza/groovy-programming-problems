@@ -2,9 +2,15 @@ package concurrency
 
 import spock.lang.Specification
 
+/*
+ How can we divide a large file between multi threads to process it? If we are running a multi threaded application and input 
+ is a large file and we have to provide each thread a part of the file to make it fast. How we can achieve it in java?
+ 
+ http://www.careercup.com/question?id=5653584985194496
+ */
 class ProcessFilesInParallel extends Specification {
 	
-	static Integer lines = 30000
+	static Integer lines = 3000000
 	static File file
 	
 	def setupSpec() {
