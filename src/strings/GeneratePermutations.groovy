@@ -2,7 +2,7 @@ package strings
 
 import spock.lang.Specification
 
-class PermutationSpec extends Specification {
+class GeneratePermutations extends Specification {
 
 	def "should calculate all the permutations of a string"() {
 		expect:
