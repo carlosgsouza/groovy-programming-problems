@@ -64,6 +64,44 @@ class MultiIterator extends Specification {
 		multiIterator.hasNext() == false
 	}
 	
+	def "should not advance if hasNext is invoked multiple times"() {
+		given:
+		MultiIteratorImpl iterator = new MultiIteratorImpl([
+			[1, 2].iterator(),
+			[3, 4].iterator()
+		])
+		
+		expect:
+		iterator.hasNext() == true
+		iterator.hasNext() == true
+		iterator.hasNext() == true
+		
+		and:
+		iterator.next() == 1
+		
+		and:
+		iterator.hasNext() == true
+		iterator.hasNext() == true
+		iterator.hasNext() == true
+		
+		and:
+		iterator.next() == 2
+		
+		and:
+		iterator.hasNext() == true
+		iterator.hasNext() == true
+		iterator.hasNext() == true
+		
+		and:
+		iterator.next() == 3
+		iterator.next() == 4
+		
+		and:
+		iterator.hasNext() == false
+		iterator.hasNext() == false
+		iterator.hasNext() == false
+	}
+	
 	@Unroll
 	def "should not create a multi iterator with the invalid iterators: #iterators"() {
 		when:

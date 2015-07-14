@@ -7,7 +7,7 @@ class BinarySearchTree extends Specification {
 
 	def "should find common elements in two trees"() {
 		given:
-		def tree1 = new BinarySearchTreeImpl([4, 2, 1, 3, 6, 5, 7])
+		def tree1 = new BinarySearchTreeImpl([4, 2, 6, 1, 3, 5, 7])
 		def tree2 = new BinarySearchTreeImpl([6, 4, 9, 1, 7, 11, 0, 8])
 		
 		expect:
