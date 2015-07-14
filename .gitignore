@@ -5,3 +5,5 @@
 **/bin/
 **/build/
 /bin/
+gradle.properties
+ProcessFilesInParallel.txt
