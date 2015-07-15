@@ -1,16 +1,13 @@
 apply plugin: "groovy"
-apply plugin: 'eclipse'
+apply plugin: "eclipse"
+apply plugin: "jacoco"
 
 repositories { 
 	jcenter() 
 }
 
 dependencies {
-<<<<<<< HEAD
 	compile "org.codehaus.groovy:groovy-all:2.3.10"
-=======
-	compile "org.codehaus.groovy:groovy:2.3.9"
->>>>>>> 8facf19e6ebe30e4ba3a26ec055568e1dcc2ff05
 	compile "log4j:log4j:1.2.17"
 
 	testCompile "org.spockframework:spock-core:1.0-groovy-2.3"

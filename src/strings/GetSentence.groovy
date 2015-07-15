@@ -69,7 +69,6 @@ public class GetSentence extends Specification {
 			}
 			
 			words.add(S[k]);
-			v
 			k = k - S[k].length();
 		}
 		
